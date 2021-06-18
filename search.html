@@ -17,7 +17,7 @@
 </head>
 <body>
 <!--NAVBAR-->
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
         <div class="navbar-brand">
             <i class="bi bi-film"></i>
@@ -30,10 +30,10 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                    <a class="nav-link" href="index.html" tabindex="-1" aria-disabled="true">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Search</a>
+                    <a class="nav-link disabled" href="#">Search</a>
                 </li>
             </ul>
         </div>
@@ -45,7 +45,7 @@
         <div class="col-md-9">
             <h1>Search movie</h1>
 
-            <div class="input-group mb-3">
+            <div class="input-group mb-3 d-flex justify-content-end">
                 <input type="text" class="form-control" placeholder="ex. Man of Steel" aria-label="Recipient's username"
                        aria-describedby="button-addon2" id="search-input" value="Kimetsu">
                 <button class="btn btn-outline-secondary" type="button" id="search-button">

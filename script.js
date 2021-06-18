@@ -1,16 +1,23 @@
 // const API_KEY = 'e8e4bcc5'
 const API_KEY = 'a4ca44c52c5dd4822128c31e02d41910'
 const IMG_URL = 'https://image.tmdb.org/t/p/w500'
+const ulTag = document.querySelector('#paginate')
 
-$(document).ready(function(){
+$(document).ready(function () {
     getPopularMovies()
-    $('#popular-movies').on('click', '.see-details', function (){
+    $('#popular-movies').on('click', '.see-details', function () {
         let id = $(this).data('id')
         getMovieDetails(id)
     })
 })
 
+
+/*
+    MOVIE API FUNCTIONS
+ */
 function getPopularMovies() {
+    $("#popular-movies").html('')
+
     $.ajax({
         url: 'https://api.themoviedb.org/3/movie/popular',
         type: 'GET',
@@ -19,7 +26,7 @@ function getPopularMovies() {
             'api_key': API_KEY,
         },
         success: function (hasil) {
-            if(hasil.results.length > 0){
+            if (hasil.results.length > 0) {
                 let movies = hasil.results
 
                 $.each(movies, function (i, data) {
@@ -38,39 +45,6 @@ function getPopularMovies() {
                             </div>
                     `)
                 })
-            }
-        }
-    })
-}
-
-function getMovieDetails(movieId){
-    $.ajax({
-        url: 'https://api.themoviedb.org/3/movie/' + movieId,
-        dataType: 'json',
-        type: 'GET',
-        data: {
-            // 'apikey': API_KEY,
-            // 'i': $(this).data('id')
-            'api_key': API_KEY,
-        },
-        success: function (detail) {
-            if (detail.success !== false) {
-                $("#title").text(detail.title)
-                $("#original_title").text(detail.original_title)
-                $("#poster_path").html(`
-                    <img src="` + IMG_URL + detail.poster_path + `" class="img-fluid"></img>
-                `)
-                $("#synopsis").text(detail.overview)
-                $("#release_date").text(detail.release_date)
-                console.log("genres length: " + detail.genres.length)
-                let getGenre = document.getElementById("genres")
-                for (let i = 0; i < detail.genres.length; i++) {
-                    getGenre.textContent += detail.genres[i].name
-                    if (i !== detail.genres.length - 1) {
-                        getGenre.textContent += ", "
-                    }
-                }
-                $("#status").text(detail.status)
             }
         }
     })
@@ -125,6 +99,154 @@ function searchMovie() {
     })
 }
 
+function getMovieDetails(movieId) {
+    $.ajax({
+        url: 'https://api.themoviedb.org/3/movie/' + movieId,
+        dataType: 'json',
+        type: 'GET',
+        data: {
+            // 'apikey': API_KEY,
+            // 'i': $(this).data('id')
+            'api_key': API_KEY,
+        },
+        success: function (detail) {
+            if (detail.success !== false) {
+                $("#title").text(detail.title)
+                $("#original_title").text(detail.original_title)
+                $("#poster_path").html(`
+                    <img src="` + IMG_URL + detail.poster_path + `" class="img-fluid"></img>
+                `)
+                $("#synopsis").text(detail.overview)
+                $("#release_date").text(detail.release_date)
+                console.log("genres length: " + detail.genres.length)
+                let getGenre = document.getElementById("genres")
+                getGenre.textContent = ""
+                for (let i = 0; i < detail.genres.length; i++) {
+                    getGenre.textContent += detail.genres[i].name
+                    if (i !== detail.genres.length - 1) {
+                        getGenre.textContent += ", "
+                    }
+                }
+                $("#status").text(detail.status)
+            }
+        }
+    })
+}
+
+/*
+    PAGINATION SCRIPTS
+ */
+function element(totalPages, page){
+    /*
+        VARIABLES INITIATION
+     */
+    let liTag = ''
+    let activeLi
+    let beforePages = page - 1
+    let afterPages = page + 1
+
+    /*
+        PREVIOUS BUTTON SHOW/HIDE
+     */
+    if(page > 1){
+        liTag += `
+            <li class="page-item" onclick="element(totalPages, ${page - 1})">
+                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">&laquo;</a>
+            </li>
+        `
+    }
+
+    /* (UNUSED) dots pagination after page 1
+    if(page > 2){
+        liTag += `
+            <li class="page-item" onclick="element(totalPages, 1)">
+                <a class="page-link" href="#">1</a>
+            </li>
+        `
+        if (page > 3){
+            liTag += `
+
+                <li class="page-item">
+                    <a class="page-link" href="#">...</a>
+                </li>
+            `
+        }
+    }
+     */
+
+    /*
+        IF YOU ARE ON THE FIRST PAGE
+     */
+    if(page == 1){
+        afterPages += 1
+    }
+
+    /*
+            IF YOU ARE ON THE LAST PAGE
+         */
+    if(page == totalPages){
+        beforePages -= 1
+    }
+
+    /*
+        GENERATE PAGE NUMBERS
+     */
+    for (let pageLength=beforePages; pageLength <= afterPages; pageLength++){
+        if (pageLength > totalPages){
+            continue
+        }
+        if (pageLength == 0){
+            pageLength += 1
+        }
+        if (page == pageLength){
+            activeLi = "active"
+        }else{
+            activeLi = ""
+        }
+        liTag += `
+            <li class="page-item ${activeLi}">
+                <a class="page-link" href="#">${pageLength}</a>
+            </li>
+        `
+    }
+
+    /* (UNUSED) dots pagination before last page
+    if(page < totalPages - 1){
+        if (page < totalPages - 2){
+            liTag += `
+            
+                <li class="page-item">
+                    <a class="page-link" href="#">...</a>
+                </li>
+            `
+        }
+        liTag += `
+            <li class="page-item" onclick="element(totalPages, ${totalPages})">
+                <a class="page-link" href="#">${totalPages}</a>
+            </li>
+        `
+    }
+
+     */
+
+    /*
+        NEXT BUTTON SHOW/HIDE
+     */
+    if (page < totalPages){
+        liTag += `
+            <li class="page-item" onclick="element(totalPages, ${page + 1})">
+                <a class="page-link" href="#">&raquo;</a>
+            </li>
+        `
+    }
+
+    ulTag.innerHTML = liTag
+}
+
+/*
+    RUN SCRIPTS
+ */
+
 $('#search-button').on('click', function () {
     searchMovie()
 })
@@ -139,3 +261,5 @@ $('#movie-list').on('click', '.see-details', function () {
     let id = $(this).data('id')
     getMovieDetails(id)
 })
+let totalPages = 5
+element(5, 1)
