@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head id="head">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
@@ -44,18 +44,18 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mx-4 mb-lg-0">
-<!--                <li class="nav-item me-4">-->
-<!--                    <a class="nav-link" href="movies.html">Movies</a>-->
-<!--                </li>-->
+                <!--                <li class="nav-item me-4">-->
+                <!--                    <a class="nav-link" href="movies.html">Movies</a>-->
+                <!--                </li>-->
                 <li class="nav-item dropdown me-4">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Movies
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="movies.html" id="popularMoviesBtn">Popular</a></li>
-                        <li><a class="dropdown-item" href="movies.html" id="upcomingMoviesBtn">Upcoming</a></li>
-                        <li><a class="dropdown-item" href="movies.html" id="topRatedMoviesBtn">Top Rated</a></li>
+                        <li><a class="dropdown-item" href="#" id="popularMoviesBtn">Popular</a></li>
+                        <li><a class="dropdown-item" href="#" id="upcomingMoviesBtn">Upcoming</a></li>
+                        <li><a class="dropdown-item" href="#" id="topRatedMoviesBtn">Top Rated</a></li>
                     </ul>
                 </li>
                 <li class="nav-item me-4">
@@ -78,33 +78,11 @@
 </nav>
 <!--  -->
 
-<!--HEADER-->
-
-<div class="jumbotron jumbotron-fluid my-mt" id="jumbotron">
-    <div class="container-fluid col-md-11">
-        <h1 class="title display-6 fw-bold">Millions of movies, TV shows and people to discover. Explore now.</h1>
-        <br>
-        <div class="input-group mb-0">
-            <input type="text" class="form-light form-control rounded-start" placeholder="ex. Man of Steel" aria-label="Recipient's username"
-                   aria-describedby="button-addon2" id="search-input" value="naruto">
-            <button class="btn light" type="button" id="search-button">
-                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#BF8B4B"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27c1.2-1.4 1.82-3.31 1.48-5.34-.47-2.78-2.79-5-5.59-5.34-4.23-.52-7.79 3.04-7.27 7.27.34 2.8 2.56 5.12 5.34 5.59 2.03.34 3.94-.28 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-            </button>
-        </div>
-        <br>
-
-        <div class="row" id="movie-list"></div>
-    </div>
-</div>
-
-<!-- END HEADER-->
-
 <!--CONTENTS-->
 <div class="container-fluid">
     <div class="row mt-3 justify-content-center">
-        <div class="col-md-11">
-            <h3 class="title mb-3 mt-5">Popular Movie</h3>
-            <hr>
+        <div class="col-md-11" id="title">
+            <h3 class="title mb-3 mt-5">Popular Movies</h3>
             <!--    PAGINATION
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center" id="paginate">
@@ -117,58 +95,6 @@
     </div>
 </div>
 <!---->
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-scrollable ">
-        <div class="modal-content primary">
-            <div class="modal-body">
-                <div class="container-fluid">
-                    <div class="row">
-                        <p class="fs-4 title" id="title"></p>
-                        <p id="original_title"></p>
-                        <br><br><hr>
-                        <div class="col-md-4" id="poster_path">
-                        </div>
-                        <div class="col-md-8">
-                            <ul class="list-group">
-                                <li class="list-group list-group-flush primary">
-                                    <h6 class="fw-bold" style="color:#BF8B4B">Synopsis</h6>
-                                    <br>
-                                    <p id="synopsis"></p>
-                                </li>
-                                <br>
-                                <li class="list-group list-group-flush primary">
-                                    <h6 class="fw-bold" style="color:#BF8B4B ">Details</h6>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-2">
-                                            <p>Released</p>
-                                        </div>
-                                        <div class="col-1"><p> : </p></div>
-                                        <div class="col-9">
-                                            <p id="release_date"></p>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-2">
-                                            <p>Genre</p>
-                                        </div>
-                                        <div class="col-1"><p> : </p></div>
-                                        <div class="col-9">
-                                            <p id="genres"></p>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!--END MODAL-->
 
 <!--SCRIPTS-->
 <script src="https://pagination.js.org/dist/2.1.5/pagination.min.js"></script>
