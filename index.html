@@ -18,9 +18,8 @@
         rel="stylesheet">
 
     <!--    BOOTSTRAP-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body class="body">
 <!--NAVBAR-->
@@ -44,11 +43,8 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mx-4 mb-lg-0">
-<!--                <li class="nav-item me-4">-->
-<!--                    <a class="nav-link" href="movies.html">Movies</a>-->
-<!--                </li>-->
                 <li class="nav-item dropdown me-4">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+                    <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown"
                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Movies
                     </a>
@@ -58,22 +54,18 @@
                         <li><a class="dropdown-item" href="movies.html" id="topRatedMoviesBtn">Top Rated</a></li>
                     </ul>
                 </li>
-                <li class="nav-item me-4">
-                    <a class="nav-link" href="series.html">Series</a>
+                <li class="nav-item dropdown me-4">
+                    <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown"
+                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Series
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="movies.html" id="popularSeriesBtn">Popular</a></li>
+                        <li><a class="dropdown-item" href="movies.html" id="upcomingSeriesBtn">Upcoming</a></li>
+                        <li><a class="dropdown-item" href="movies.html" id="topRatedSeriesBtn">Top Rated</a></li>
+                    </ul>
                 </li>
             </ul>
-            <!-- Search in Navbar
-            <div class="input-group-lg mb-0 d-flex justify-content-end">
-                <div class="input-group input-group-sm">
-                    <span class="input-group-text">
-                        <svg xmlns="http://www.w3.org/2000/svg" height="16px" viewBox="0 0 22 22" width="16px" fill="#000000">
-                            <path d="M0 0h24v24H0V0z" fill="none"/>
-                            <path d="M15.5 14h-.79l-.28-.27c1.2-1.4 1.82-3.31 1.48-5.34-.47-2.78-2.79-5-5.59-5.34-4.23-.52-7.79 3.04-7.27 7.27.34 2.8 2.56 5.12 5.34 5.59 2.03.34 3.94-.28 5.34-1.48l.27.28v.79l4.25 4.25c.41.41 1.08.41 1.49 0 .41-.41.41-1.08 0-1.49L15.5 14zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-                    </span>
-                <input type="text" class="form-control rounded-end" placeholder="Search your movies" aria-label="Recipient's username"
-                       aria-describedby="button-addon2" id="search-input" value="">
-        </div>
-                -->
         </div>
 </nav>
 <!--  -->
@@ -82,7 +74,7 @@
 
 <div class="jumbotron jumbotron-fluid my-mt" id="jumbotron">
     <div class="container-fluid col-md-11">
-        <h1 class="title display-6 fw-bold">Millions of movies, TV shows and people to discover. Explore now.</h1>
+        <h1 class="title display-6 fw-bold">Get rickrolled loooooll.</h1>
         <br>
         <div class="input-group mb-0">
             <input type="text" class="form-light form-control rounded-start" placeholder="ex. Man of Steel" aria-label="Recipient's username"
@@ -171,12 +163,8 @@
 <!--END MODAL-->
 
 <!--SCRIPTS-->
-<script src="https://pagination.js.org/dist/2.1.5/pagination.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
-        crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/jquery-3.6.0.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

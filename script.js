@@ -10,9 +10,33 @@ const title = document.querySelector('#list-title')
 $(document).ready(function () {
     getPopularMovies()
     getUpcomingMovies()
+    getTopRatedMovies()
+    getPopularSeries()
+    getUpcomingSeries()
+    getTopRatedSeries()
     $('#popular-movies').on('click', '.see-details', function () {
         let id = $(this).data('id')
         getMovieDetails(id)
+    })
+    $('#upcoming-movies').on('click', '.see-details', function () {
+        let id = $(this).data('id')
+        getMovieDetails(id)
+    })
+    $('#topRated-movies').on('click', '.see-details', function () {
+        let id = $(this).data('id')
+        getMovieDetails(id)
+    })
+    $('#popular-series').on('click', '.see-details', function () {
+        let id = $(this).data('id')
+        getSeriesDetails(id)
+    })
+    $('#upcoming-series').on('click', '.see-details', function () {
+        let id = $(this).data('id')
+        getSeriesDetails(id)
+    })
+    $('#topRated-series').on('click', '.see-details', function () {
+        let id = $(this).data('id')
+        getSeriesDetails(id)
     })
     $('#popularMoviesBtn').on('click', function(){
         $('#popular-movies').html('')
@@ -39,12 +63,12 @@ function getPopularSeries(){
                 let movies = hasil.results
 
                 $.each(movies, function (i, data) {
-                    $('#popular-movies').append(`
+                    $('#popular-series').append(`
                             <div class="mt-4 col-md-2 mb-2 d-flex">
                                 <div class="card primary" style="width: 18rem">
                                   <img src="` + (data.poster_path !== null ? IMG_URL + data.poster_path : "http://via.placeholder.com/1080x1580") + `" class="card-img-top" alt="...">
                                   <div class="card-body d-flex flex-column">
-                                    <h6 class="card-title mt-auto fw-bold">` + data.title + `</h6>
+                                    <h6 class="card-title mt-auto fw-bold">` + data.name + `</h6>
                                     <p class="card-text fs-6"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 28 28" width="24px" fill="#F2B705"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27l4.15,2.51c0.76,0.46,1.69-0.22,1.49-1.08l-1.1-4.72l3.67-3.18c0.67-0.58,0.31-1.68-0.57-1.75l-4.83-0.41 l-1.89-4.46c-0.34-0.81-1.5-0.81-1.84,0L9.19,8.63L4.36,9.04c-0.88,0.07-1.24,1.17-0.57,1.75l3.67,3.18l-1.1,4.72 c-0.2,0.86,0.73,1.54,1.49,1.08L12,17.27z"/></g></svg> 
                                     ` + data.vote_average + `
                                     </p>
@@ -54,6 +78,110 @@ function getPopularSeries(){
                             </div>
                     `)
                 })
+            }
+        }
+    })
+}
+
+function getUpcomingSeries(){
+    $("#upcoming-series").html('')
+
+    $.ajax({
+        url: 'https://api.themoviedb.org/3/tv/popular',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            'api_key': API_KEY,
+        },
+        success: function (hasil) {
+            if (hasil.results.length > 0) {
+                let movies = hasil.results
+
+                $.each(movies, function (i, data) {
+                    $('#upcoming-series').append(`
+                            <div class="mt-4 col-md-2 mb-2 d-flex">
+                                <div class="card primary" style="width: 18rem">
+                                  <img src="` + (data.poster_path !== null ? IMG_URL + data.poster_path : "http://via.placeholder.com/1080x1580") + `" class="card-img-top" alt="...">
+                                  <div class="card-body d-flex flex-column">
+                                    <h6 class="card-title mt-auto fw-bold">` + data.name + `</h6>
+                                    <p class="card-text fs-6"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 28 28" width="24px" fill="#F2B705"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27l4.15,2.51c0.76,0.46,1.69-0.22,1.49-1.08l-1.1-4.72l3.67-3.18c0.67-0.58,0.31-1.68-0.57-1.75l-4.83-0.41 l-1.89-4.46c-0.34-0.81-1.5-0.81-1.84,0L9.19,8.63L4.36,9.04c-0.88,0.07-1.24,1.17-0.57,1.75l3.67,3.18l-1.1,4.72 c-0.2,0.86,0.73,1.54,1.49,1.08L12,17.27z"/></g></svg> 
+                                    ` + data.vote_average + `
+                                    </p>
+                                    <a href="#" class="btn btn-outline-primary card-link see-details mt-auto secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="` + data.id + `">See details</a>
+                                  </div>
+                                </div>
+                            </div>
+                    `)
+                })
+            }
+        }
+    })
+}
+
+function getTopRatedSeries(){
+    $("#topRated-series").html('')
+
+    $.ajax({
+        url: 'https://api.themoviedb.org/3/tv/popular',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            'api_key': API_KEY,
+        },
+        success: function (hasil) {
+            if (hasil.results.length > 0) {
+                let movies = hasil.results
+
+                $.each(movies, function (i, data) {
+                    $('#topRated-series').append(`
+                            <div class="mt-4 col-md-2 mb-2 d-flex">
+                                <div class="card primary" style="width: 18rem">
+                                  <img src="` + (data.poster_path !== null ? IMG_URL + data.poster_path : "http://via.placeholder.com/1080x1580") + `" class="card-img-top" alt="...">
+                                  <div class="card-body d-flex flex-column">
+                                    <h6 class="card-title mt-auto fw-bold">` + data.name + `</h6>
+                                    <p class="card-text fs-6"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 28 28" width="24px" fill="#F2B705"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27l4.15,2.51c0.76,0.46,1.69-0.22,1.49-1.08l-1.1-4.72l3.67-3.18c0.67-0.58,0.31-1.68-0.57-1.75l-4.83-0.41 l-1.89-4.46c-0.34-0.81-1.5-0.81-1.84,0L9.19,8.63L4.36,9.04c-0.88,0.07-1.24,1.17-0.57,1.75l3.67,3.18l-1.1,4.72 c-0.2,0.86,0.73,1.54,1.49,1.08L12,17.27z"/></g></svg> 
+                                    ` + data.vote_average + `
+                                    </p>
+                                    <a href="#" class="btn btn-outline-primary card-link see-details mt-auto secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="` + data.id + `">See details</a>
+                                  </div>
+                                </div>
+                            </div>
+                    `)
+                })
+            }
+        }
+    })
+}
+
+function getSeriesDetails(seriesId){
+    $.ajax({
+        url: 'https://api.themoviedb.org/3/tv/' + seriesId,
+        dataType: 'json',
+        type: 'GET',
+        data: {
+            // 'apikey': API_KEY,
+            // 'i': $(this).data('id')
+            'api_key': API_KEY,
+        },
+        success: function (detail) {
+            if (detail.success !== false) {
+                $("#title").text(detail.name)
+                $("#original_title").text(detail.original_name)
+                $("#poster_path").html(`
+                    <img src="` + IMG_URL + detail.poster_path + `" class="img-fluid"></img>
+                `)
+                $("#synopsis").text(detail.overview)
+                $("#release_date").text(detail.first_air_date)
+                console.log("genres length: " + detail.genres.length)
+                let getGenre = document.getElementById("genres")
+                getGenre.textContent = ""
+                for (let i = 0; i < detail.genres.length; i++) {
+                    getGenre.textContent += detail.genres[i].name
+                    if (i !== detail.genres.length - 1) {
+                        getGenre.textContent += ", "
+                    }
+                }
+                $("#status").text(detail.status)
             }
         }
     })
@@ -79,6 +207,41 @@ function getUpcomingMovies(){
 
                 $.each(movies, function (i, data) {
                     $('#upcoming-movies').append(`
+                            <div class="mt-4 col-md-2 mb-2 d-flex">
+                                <div class="card primary" style="width: 18rem">
+                                  <img src="` + (data.poster_path !== null ? IMG_URL + data.poster_path : "http://via.placeholder.com/1080x1580") + `" class="card-img-top" alt="...">
+                                  <div class="card-body d-flex flex-column">
+                                    <h6 class="card-title mt-auto fw-bold">` + data.title + `</h6>
+                                    <p class="card-text fs-6"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 28 28" width="24px" fill="#F2B705"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27l4.15,2.51c0.76,0.46,1.69-0.22,1.49-1.08l-1.1-4.72l3.67-3.18c0.67-0.58,0.31-1.68-0.57-1.75l-4.83-0.41 l-1.89-4.46c-0.34-0.81-1.5-0.81-1.84,0L9.19,8.63L4.36,9.04c-0.88,0.07-1.24,1.17-0.57,1.75l3.67,3.18l-1.1,4.72 c-0.2,0.86,0.73,1.54,1.49,1.08L12,17.27z"/></g></svg> 
+                                    ` + data.vote_average + `
+                                    </p>
+                                    <a href="#" class="btn btn-outline-primary card-link see-details mt-auto secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-id="` + data.id + `">See details</a>
+                                  </div>
+                                </div>
+                            </div>
+                    `)
+                })
+            }
+        }
+    })
+}
+
+function getTopRatedMovies(){
+    $("#topRated-movies").html('')
+
+    $.ajax({
+        url: 'https://api.themoviedb.org/3/movie/top_rated',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            'api_key': API_KEY,
+        },
+        success: function (hasil) {
+            if (hasil.results.length > 0) {
+                let movies = hasil.results
+
+                $.each(movies, function (i, data) {
+                    $('#topRated-movies').append(`
                             <div class="mt-4 col-md-2 mb-2 d-flex">
                                 <div class="card primary" style="width: 18rem">
                                   <img src="` + (data.poster_path !== null ? IMG_URL + data.poster_path : "http://via.placeholder.com/1080x1580") + `" class="card-img-top" alt="...">
