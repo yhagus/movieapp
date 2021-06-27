@@ -4,6 +4,20 @@ const IMG_URL = 'https://image.tmdb.org/t/p/w500'
 const ulTag = document.querySelector('#paginate')
 const title = document.querySelector('#list-title')
 
+function getGenres(){
+    $.ajax({
+        url: 'https://api.themoviedb.org/3/genre/movie/list',
+        type: 'GET',
+        dataType: 'json',
+        data:{
+            'api_key': API_KEY
+        },
+        success: function (hasil){
+            console.log(hasil.genres[3])
+        }
+    })
+}
+
 /*
     INITS
  */
@@ -14,6 +28,7 @@ $(document).ready(function () {
     getPopularSeries()
     getUpcomingSeries()
     getTopRatedSeries()
+    getGenres()
     $('#popular-movies').on('click', '.see-details', function () {
         let id = $(this).data('id')
         getMovieDetails(id)
@@ -460,7 +475,7 @@ function element(totalPages, page) {
     if(page < totalPages - 1){
         if (page < totalPages - 2){
             liTag += `
-            
+
                 <li class="page-item">
                     <a class="page-link" href="#">...</a>
                 </li>
@@ -514,8 +529,8 @@ $('#movie-list').on('click', '.see-details', function () {
     let id = $(this).data('id')
     getMovieDetails(id)
 })
-let totalPages = 5
-element(5, 1)
+// let totalPages = 5
+// element(5, 1)
 
 /*
     NAVIGATIONS

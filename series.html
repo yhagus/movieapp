@@ -6,8 +6,7 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Paguyuban Movies</title>
-    <link rel="icon" href="https://trendnesia.com/wp-content/uploads/2021/03/menggokil.jpg" type="image/gif"
-          sizes="16x16">
+    <link rel="icon" href="assets/web-icon.png" type="image/gif" sizes="16x16">
     <title>Paguyuban Movies</title>
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
@@ -18,9 +17,8 @@
         rel="stylesheet">
 
     <!--    BOOTSTRAP-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/bootstrap-icons.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
 </head>
 <body class="body">
 <!--NAVBAR-->
@@ -44,59 +42,97 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mx-4 mb-lg-0">
-                <li class="nav-item dropdown me-4">
-                    <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown"
-                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <li class="nav-item me-4">
+                    <a class="nav-link" href="movies.html">
                         Movies
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="movies.html" id="popularMoviesBtn">Popular</a></li>
-                        <li><a class="dropdown-item" href="movies.html" id="upcomingMoviesBtn">Upcoming</a></li>
-                        <li><a class="dropdown-item" href="movies.html" id="topRatedMoviesBtn">Top Rated</a></li>
-                    </ul>
                 </li>
-                <li class="nav-item dropdown me-4">
-                    <a class="nav-link active dropdown-toggle" href="#" id="navbarDropdown"
-                       role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <li class="nav-item me-4">
+                    <a class="nav-link active disabled" href="series.html">
                         Series
                     </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="movies.html" id="popularSeriesBtn">Popular</a></li>
-                        <li><a class="dropdown-item" href="movies.html" id="upcomingSeriesBtn">Upcoming</a></li>
-                        <li><a class="dropdown-item" href="movies.html" id="topRatedSeriesBtn">Top Rated</a></li>
-                    </ul>
                 </li>
             </ul>
         </div>
 </nav>
 <!--  -->
 
-<!--CONTENTS-->
-<div class="container-fluid">
-    <div class="row mt-3 justify-content-center">
-        <div class="col-md-11">
-            <h3 class="title mb-3 mt-5">Popular Series</h3>
-            <!--    PAGINATION
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center" id="paginate">
-                </ul>
-            </nav>
-            -->
-            <!---->
-            <div class="row" id="popular-series"></div>
+<!--SEARCH BAR-->
+<div class="container-fluid col-md-11" style="margin-top: 6rem;">
+    <div class="row">
+        <div class="col-2">
+            <h4 class="fw-bold">Search</h4>
         </div>
-        <div class="col-md-11">
-            <h3 class="title mb-3 mt-5">Upcoming Series</h3>
-            <div class="row" id="upcoming-series"></div>
-        </div>
-        <div class="col-md-11">
-            <h3 class="title mb-3 mt-5">Top Rated Series</h3>
-            <div class="row" id="topRated-series"></div>
+        <div class="col-10">
+            <div class="input-group mb-0">
+                <span aria-hidden="true" class="fa fa-search fa-2x fa-search"></span>
+                <input type="text" class="form-light form-control rounded-pill" placeholder="ex. Rick and Morty"
+                       aria-label="Recipient's username"
+                       aria-describedby="button-addon2" id="search-input">
+                <button class="btn light" type="button" hidden="hidden" id="search-button"></button>
+                &emsp;&emsp;
+                <h4><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="2 0 24 24" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg></h4>
+            </div>
         </div>
     </div>
 </div>
+<br><hr>
 <!---->
 
+<!--CONTENTS-->
+<div class="container-fluid" style="margin-top: 2rem;">
+    <div class="row justify-content-center">
+        <div class="col-3">
+            <div class="card primary">
+                <div class="card-body">
+                    <h6 class="text-light text-left fw-bold mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px"
+                             viewBox="0 0 24 24" width="24px" fill="#FFFFFF">
+                            <g>
+                                <path d="M0,0h24 M24,24H0" fill="none"/>
+                                <path
+                                    d="M7,6h10l-5.01,6.3L7,6z M4.25,5.61C6.27,8.2,10,13,10,13v6c0,0.55,0.45,1,1,1h2c0.55,0,1-0.45,1-1v-6 c0,0,3.72-4.8,5.74-7.39C20.25,4.95,19.78,4,18.95,4H5.04C4.21,4,3.74,4.95,4.25,5.61z"/>
+                                <path d="M0,0h24v24H0V0z" fill="none"/>
+                            </g>
+                        </svg>&emsp;Filter TV Series
+                    </h6>
+                    <br>
+                    <select class="form-select form-select-sm rounded-pill" id="type" aria-label="Default select example">
+                        <option selected value="popularity">Popularity</option>
+                        <option value="vote_average">Rating</option>
+                        <option value="release_date">Release Date</option>
+                        <option value="original_title">Title</option>
+                    </select>
+                    <br>
+                    <select class="form-select form-select-sm rounded-pill" id="order" aria-label="Default select example">
+                        <option selected value="desc">Descending</option>
+                        <option value="asc">Ascending</option>
+                    </select>
+                    <br>
+                    <button class="btn btn-primary btn-sm secondary w-100 rounded-pill" id="filter-button">OK</button>
+                </div>
+            </div>
+            <hr>
+            <div class="card primary">
+                <div class="card-body">
+                    <h6 class="text-light text-left fw-bold mt-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px"
+                             fill="#FFFFFF">
+                            <path d="M0 0h24v24H0V0z" fill="none"/>
+                            <path
+                                d="M10 11l-.94 2.06L7 14l2.06.94L10 17l.94-2.06L13 14l-2.06-.94zm8.01-7l2 4h-3l-2-4h-2l2 4h-3l-2-4h-2l2 4h-3l-2-4h-1c-1.1 0-1.99.9-1.99 2l-.01 12c0 1.1.9 2 2 2h16c1.1 0 1.99-.9 1.99-2V4h-3.99zm2 14h-16V6.47L5.77 10H16l-.63 1.37L14 12l1.37.63L16 14l.63-1.37L18 12l-1.37-.63L16 10h4.01v8z"/>
+                        </svg>&emsp;Genre
+                    </h6>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="row" id="series-list"></div>
+        </div>
+
+    </div>
+</div>
+<!---->
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -139,6 +175,15 @@
                                             <p id="genres"></p>
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-2">
+                                            <p>Actor</p>
+                                        </div>
+                                        <div class="col-1"><p> : </p></div>
+                                        <div class="col-9">
+                                            <p id="actor"></p>
+                                        </div>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
@@ -149,13 +194,84 @@
     </div>
 </div>
 <!--END MODAL-->
+
+<!-- Footer -->
+<footer class="mt-5 text-center text-lg-start text-muted">
+    <!-- Section: Links  -->
+    <section class="footer pt-1">
+        <div class="text-start container text-md-start mt-5">
+            <!-- Grid row -->
+            <div class="row mt-3">
+
+                <!-- Grid column -->
+                <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4" style="color: #BF8B4B">
+                        Language Used
+                    </h6>
+                    <p>HTML</p>
+                    <p>CSS</p>
+                    <p>JavaScript</p>
+                </div>
+                <!-- Grid column -->
+
+                <!-- Grid column -->
+                <div class="col-md-3 col-lg-4 col-xl-3 mx-auto mb-4">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4" style="color: #BF8B4B">
+                        Framework
+                    </h6>
+                    <p>Bootstrap</p>
+                    <p>jQuery</p>
+                </div>
+                <!-- Grid column -->
+
+                <!-- Grid column -->
+                <div class="col-md-3 col-lg-2 col-xl-2 mx-auto mb-4">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4" style="color: #BF8B4B">
+                        NIM
+                    </h6>
+                    <p>19.11.2679</p>
+                    <p>19.11.2681</p>
+                    <p>19.11.2689</p>
+                    <p>19.11.2707</p>
+                    <p>19.11.2710</p>
+                </div>
+                <!-- Grid column -->
+
+                <!-- Grid column -->
+                <div class="col-md-3 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
+                    <!-- Links -->
+                    <h6 class="text-uppercase fw-bold mb-4" style="color: #BF8B4B">
+                        Nama
+                    </h6>
+                    <p>Bagus Pranowo</p>
+                    <p>Elang Iman Angkasa</p>
+                    <p>David Muhammad Nizam</p>
+                    <p>Burhan Rafid Aziz</p>
+                    <p>Reychandra Tristan Fahlevie</p>
+                </div>
+                <!-- Grid column -->
+            </div>
+            <!-- Grid row -->
+        </div>
+    </section>
+    <!-- Section: Links  -->
+
+    <!-- Copyright -->
+    <div class="text-center p-4" style="background-color: rgba(0, 0, 0, 0.1);">
+        © 2021 Copyright:
+        <a class="text-reset fw-bold" href="https:google.com/">PPE.com</a>
+    </div>
+    <!-- Copyright -->
+</footer>
+<!-- Footer -->
+
 <!--SCRIPTS-->
-<script src="https://pagination.js.org/dist/2.1.5/pagination.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
-        crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-<script src="script.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/jquery-3.6.0.min.js"></script>
+<script src="js/series.js"></script>
+<script src="js/transparent-nav.js"></script>
 </body>
 </html>
