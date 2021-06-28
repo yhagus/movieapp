@@ -4,12 +4,85 @@ const List = $('#movie-list')
 const filterButton = $('#filter-button')
 const defaultSorting = $('#type').val()
 const defaultOrder = $('#order').val()
+const ulTag = $('#pagination')
+let total = 20
+element(total, 5)
 
-getMovies(defaultSorting,defaultOrder)
+function element(totalPages, Page){
+    let liTag = ''
+    let activeLi
+    let beforePages = Page - 1
+    let afterPages = Page + 1
+
+    /*
+        SHOW/HIDE PREVIOUS BUTTON
+     */
+    if(Page > 1){
+        liTag += `
+        <li class="page-item" onclick="element(${totalPages}, ${Page - 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        `
+    }
+
+    /*
+        LAST PAGE
+     */
+    if(Page === totalPages){
+        beforePages = beforePages - 1
+    }
+
+    /*
+        FIRST PAGE
+     */
+    if(Page === 1){
+        afterPages += 1
+    }
+
+    /*
+        NAVIGATE CURRENT PAGE
+     */
+    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++){
+        if(pageLength > totalPages){
+            continue
+        }
+        if (pageLength === 0){
+            pageLength += 1
+        }
+        if(Page === pageLength){
+            activeLi = 'active'
+        } else {
+            activeLi = ''
+        }
+
+        liTag += `
+        <li class="page-item ${activeLi}" onclick="element(${totalPages}, ${pageLength})">
+            <a class="page-link" href="javascript:">
+                <span aria-hidden="true">${pageLength}</span>
+            </a>
+        </li>
+        `
+    }
+
+    if(Page < totalPages){
+        liTag += `
+        <li class="page-item" onclick="element(${totalPages}, ${Page + 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        `
+    }
+    ulTag.html(liTag)
+}
+
+getMovies(defaultSorting,defaultOrder,1)
 filterButton.on('click', function(){
     let selectedSorting = $('#type').val()
     let selectedOrder = $('#order').val()
-    getMovies(selectedSorting,selectedOrder)
+    getMovies(selectedSorting,selectedOrder,1)
 })
 
 seeDetails(List)
@@ -25,7 +98,7 @@ $('#search-input').on('keyup', function (event) {
     API FUNCTIONS
  */
 
-function getMovies(sort, order){
+function getMovies(sort, order, page){
     List.html('')
 
     $.ajax({
@@ -34,7 +107,8 @@ function getMovies(sort, order){
         dataType: 'json',
         data:{
             'api_key': API_KEY,
-            'sort_by': `${sort}.${order}`
+            'sort_by': `${sort}.${order}`,
+            'page': page
         },
         success: function (hasil){
             if (hasil.results.length > 0) {
