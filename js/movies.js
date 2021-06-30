@@ -5,10 +5,15 @@ const filterButton = $('#filter-button')
 const defaultSorting = $('#type').val()
 const defaultOrder = $('#order').val()
 const ulTag = $('#pagination')
-let total = 20
-element(total, 5)
+let total
+let page
+let selectedSorting
+let selectedOrder
+let iSearch = true
 
-function element(totalPages, Page){
+function paginationMovies(totalPages, Page){
+    selectedSorting = $('#type').val()
+    selectedOrder = $('#order').val()
     let liTag = ''
     let activeLi
     let beforePages = Page - 1
@@ -19,7 +24,7 @@ function element(totalPages, Page){
      */
     if(Page > 1){
         liTag += `
-        <li class="page-item" onclick="element(${totalPages}, ${Page - 1})">
+        <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page - 1}); getMovies(selectedSorting,selectedOrder,${Page - 1})">
             <a class="page-link" href="javascript:" aria-label="Next">
                 <span aria-hidden="true">&laquo;</span>
             </a>
@@ -58,7 +63,7 @@ function element(totalPages, Page){
         }
 
         liTag += `
-        <li class="page-item ${activeLi}" onclick="element(${totalPages}, ${pageLength})">
+        <li class="page-item ${activeLi}" onclick="paginationMovies(${totalPages}, ${pageLength}); getMovies(selectedSorting,selectedOrder,${pageLength})">
             <a class="page-link" href="javascript:">
                 <span aria-hidden="true">${pageLength}</span>
             </a>
@@ -68,7 +73,89 @@ function element(totalPages, Page){
 
     if(Page < totalPages){
         liTag += `
-        <li class="page-item" onclick="element(${totalPages}, ${Page + 1})">
+        <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page + 1}); getMovies(selectedSorting,selectedOrder,${Page + 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        `
+    }
+    ulTag.html(liTag)
+}
+
+function paginationSearch(totalPages, Page){
+    let liTag = ''
+    let activeLi
+    let beforePages = Page - 1
+    let afterPages = Page + 1
+
+    /*
+        SHOW/HIDE PREVIOUS BUTTON
+     */
+    if(Page > 1){
+        liTag += `
+        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page - 1}); search(${Page - 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        `
+    }
+
+    /*
+        LAST PAGE
+     */
+    if(Page === totalPages){
+        if (Page === 1){
+            beforePages -= 0
+        }
+        if (Page > 2){
+            beforePages -= 2
+        }
+
+    } else if(Page === totalPages - 1){
+        if (Page === 2){
+            beforePages -= 1
+        }
+    }
+
+    /*
+        FIRST PAGE
+     */
+    if(Page === 1){
+        afterPages += 2
+    } else if (Page === 2){
+        afterPages += 1
+    }
+
+    /*
+        NAVIGATE CURRENT PAGE
+     */
+    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++){
+        if(pageLength > totalPages){
+            continue
+        }
+        if (pageLength === 0){
+            pageLength += 1
+        }
+        if(Page === pageLength){
+            activeLi = 'active'
+        } else {
+            activeLi = ''
+        }
+
+        liTag += `
+        <li class="page-item ${activeLi}" onclick="paginationSearch(${totalPages}, ${pageLength}); search(${pageLength})">
+            <a class="page-link" href="javascript:">
+                <span aria-hidden="true">${pageLength}</span>
+            </a>
+        </li>
+        `
+    }
+
+    if(Page < totalPages){
+        liTag += `
+        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page + 1}); search(${Page + 1})">
             <a class="page-link" href="javascript:" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
@@ -79,10 +166,13 @@ function element(totalPages, Page){
 }
 
 getMovies(defaultSorting,defaultOrder,1)
+paginationMovies(total,1)
 filterButton.on('click', function(){
-    let selectedSorting = $('#type').val()
-    let selectedOrder = $('#order').val()
+    selectedSorting = $('#type').val()
+    selectedOrder = $('#order').val()
     getMovies(selectedSorting,selectedOrder,1)
+    paginationMovies(total,1)
+    $('#search-input').html('')
 })
 
 seeDetails(List)
@@ -90,7 +180,8 @@ seeDetails(List)
 $('#search-input').on('keyup', function (event) {
     if (event.keyCode === 13) {
         List.html('')
-        search()
+        search(1)
+        paginationSearch(total,1)
     }
 })
 
@@ -100,6 +191,17 @@ $('#search-input').on('keyup', function (event) {
 
 function getMovies(sort, order, page){
     List.html('')
+
+    let ajax = $.parseJSON($.ajax({
+        url: `https://api.themoviedb.org/3/discover/movie`,
+        dataType: 'json',
+        data:{
+            'api_key': API_KEY,
+            'sort_by': `${sort}.${order}`,
+            'page': page
+        },
+        async:false
+    }).responseText)
 
     $.ajax({
         url: `https://api.themoviedb.org/3/discover/movie`,
@@ -111,6 +213,7 @@ function getMovies(sort, order, page){
             'page': page
         },
         success: function (hasil){
+
             if (hasil.results.length > 0) {
                 let movie = hasil.results
 
@@ -118,7 +221,7 @@ function getMovies(sort, order, page){
                     List.append(`
                             <div class="col-md-3 mb-2 d-flex">
                                 <div class="card primary" style="width: auto">
-                                  <img src="${data.poster_path !== null ? IMG_URL + data.poster_path : "http://via.placeholder.com/1080x1580"}" class="card-img-top" alt="...">
+                                  <img src="${typeof data.poster_path !== 'undefined' ? IMG_URL + data.poster_path : "assets/placeholder.png"}" class="card-img-top" alt="...">
                                   <div class="card-body d-flex flex-column">
                                     <h6 class="card-title mt-auto fw-bold">${typeof data.original_name !== 'undefined' ? data.original_name : data.original_title}</h6>
                                     <p class="card-text fs-6"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 28 28" width="24px" fill="#F2B705"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27l4.15,2.51c0.76,0.46,1.69-0.22,1.49-1.08l-1.1-4.72l3.67-3.18c0.67-0.58,0.31-1.68-0.57-1.75l-4.83-0.41 l-1.89-4.46c-0.34-0.81-1.5-0.81-1.84,0L9.19,8.63L4.36,9.04c-0.88,0.07-1.24,1.17-0.57,1.75l3.67,3.18l-1.1,4.72 c-0.2,0.86,0.73,1.54,1.49,1.08L12,17.27z"/></g></svg> 
@@ -131,8 +234,11 @@ function getMovies(sort, order, page){
                     `)
                 })
             }
+            //
         }
     })
+
+    total = ajax.total_pages
 }
 
 function getDetails(Id, mediaType) {
@@ -150,7 +256,7 @@ function getDetails(Id, mediaType) {
                 $('#title').text(`${typeof detail.name !== 'undefined' ? detail.name : detail.title}`)
                 $('#original_title').text(`${typeof detail.original_name !== 'undefined' ? detail.original_name : detail.original_title}`)
                 $('#poster_path').html(`
-                    <img src="${IMG_URL +detail.poster_path}" class="img-fluid"></img>
+                    <img src="${detail.poster_path !== null ? IMG_URL + detail.poster_path : "assets/placeholder-smol.png"}" width="100%"></img>
                 `)
                 $('#synopsis').text(detail.overview)
                 $('#release_date').text(`${typeof detail.release_date !== 'undefined' ? detail.release_date : detail.first_air_date}`)
@@ -187,7 +293,6 @@ function getDetails(Id, mediaType) {
                 let director = detail.crew.filter(obj => {
                     return obj.job === 'Director'
                 })
-                console.log(director)
                 $('#director').text(`${mediaType !== 'movie' ? '-' : director[0].name}`)
             }
         }
@@ -202,8 +307,20 @@ function seeDetails(idmedia){
     })
 }
 
-function search() {
+function search(Page) {
     List.html('')
+
+    let ajax = $.parseJSON($.ajax({
+        url: 'https://api.themoviedb.org/3/search/movie',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            'api_key': API_KEY,
+            'query': $('#search-input').val(),
+            'page': Page
+        },
+        async:false
+    }).responseText)
 
     $.ajax({
         url: 'https://api.themoviedb.org/3/search/movie',
@@ -211,7 +328,8 @@ function search() {
         dataType: 'json',
         data: {
             'api_key': API_KEY,
-            'query': $('#search-input').val()
+            'query': $('#search-input').val(),
+            'page': Page
         },
         success: function (hasil) {
             if (hasil.total_results > 0) {
@@ -221,7 +339,7 @@ function search() {
                     $('#movie-list').append(`
                                 <div class="col-md-3 mb-2 d-flex">
                                     <div class="card primary" style="width: auto">
-                                      <img src="${data.poster_path !== null ? IMG_URL + data.poster_path : "http://via.placeholder.com/1080x1580"}" class="card-img-top" alt="...">
+                                      <img src="${data.poster_path !== null ? IMG_URL + data.poster_path : "assets/placeholder.png"}" class="card-img-top" alt="...">
                                       <div class="card-body d-flex flex-column">
                                         <h6 class="card-title mt-auto fw-bold">${typeof data.name !== 'undefined' ? data.name : data.title}</h6>
                                         <p class="card-text fs-6"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 28 28" width="24px" fill="#F2B705"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27l4.15,2.51c0.76,0.46,1.69-0.22,1.49-1.08l-1.1-4.72l3.67-3.18c0.67-0.58,0.31-1.68-0.57-1.75l-4.83-0.41 l-1.89-4.46c-0.34-0.81-1.5-0.81-1.84,0L9.19,8.63L4.36,9.04c-0.88,0.07-1.24,1.17-0.57,1.75l3.67,3.18l-1.1,4.72 c-0.2,0.86,0.73,1.54,1.49,1.08L12,17.27z"/></g></svg>
@@ -243,8 +361,11 @@ function search() {
                         </div>`
                 )
             }
-            $('#search-input').val('')
-
+            // $('#search-input').val('')
+            // console.log(total = hasil.total_results)
+            // total = hasil.total_pages
         }
     })
+
+    total = ajax.total_pages
 }

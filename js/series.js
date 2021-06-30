@@ -4,26 +4,189 @@ const List = $('#series-list')
 const filterButton = $('#filter-button')
 const defaultSorting = $('#type').val()
 const defaultOrder = $('#order').val()
+const ulTag = $('#pagination')
+let total
+let page
+let selectedSorting
+let selectedOrder
+let iSearch = true
+
+function paginationSeries(totalPages, Page){
+    selectedSorting = $('#type').val()
+    selectedOrder = $('#order').val()
+    let liTag = ''
+    let activeLi
+    let beforePages = Page - 1
+    let afterPages = Page + 1
+
+    /*
+        SHOW/HIDE PREVIOUS BUTTON
+     */
+    if(Page > 1){
+        liTag += `
+        <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page - 1}); getSeries(selectedSorting,selectedOrder,${Page - 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        `
+    }
+
+    /*
+        LAST PAGE
+     */
+    if(Page === totalPages){
+        beforePages = beforePages - 1
+    }
+
+    /*
+        FIRST PAGE
+     */
+    if(Page === 1){
+        afterPages += 1
+    }
+
+    /*
+        NAVIGATE CURRENT PAGE
+     */
+    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++){
+        if(pageLength > totalPages){
+            continue
+        }
+        if (pageLength === 0){
+            pageLength += 1
+        }
+        if(Page === pageLength){
+            activeLi = 'active'
+        } else {
+            activeLi = ''
+        }
+
+        liTag += `
+        <li class="page-item ${activeLi}" onclick="paginationSeries(${totalPages}, ${pageLength}); getSeries(selectedSorting,selectedOrder,${pageLength})">
+            <a class="page-link" href="javascript:">
+                <span aria-hidden="true">${pageLength}</span>
+            </a>
+        </li>
+        `
+    }
+
+    if(Page < totalPages){
+        liTag += `
+        <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page + 1}); getSeries(selectedSorting,selectedOrder,${Page + 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        `
+    }
+    ulTag.html(liTag)
+}
+
+function paginationSearch(totalPages, Page){
+    let liTag = ''
+    let activeLi
+    let beforePages = Page - 1
+    let afterPages = Page + 1
+
+    /*
+        SHOW/HIDE PREVIOUS BUTTON
+     */
+    if(Page > 1){
+        liTag += `
+        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page - 1}); search(${Page - 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        `
+    }
+
+    /*
+        LAST PAGE
+     */
+    if(Page === totalPages){
+        beforePages = beforePages - 1
+    }
+
+    /*
+        FIRST PAGE
+     */
+    if(Page === 1){
+        afterPages += 1
+    }
+
+    /*
+        NAVIGATE CURRENT PAGE
+     */
+    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++){
+        if(pageLength > totalPages){
+            continue
+        }
+        if (pageLength === 0){
+            pageLength += 1
+        }
+        if(Page === pageLength){
+            activeLi = 'active'
+        } else {
+            activeLi = ''
+        }
+
+        liTag += `
+        <li class="page-item ${activeLi}" onclick="paginationSearch(${totalPages}, ${pageLength}); search(${pageLength})">
+            <a class="page-link" href="javascript:">
+                <span aria-hidden="true">${pageLength}</span>
+            </a>
+        </li>
+        `
+    }
+
+    if(Page < totalPages){
+        liTag += `
+        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page + 1}); search(${Page + 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        `
+    }
+    ulTag.html(liTag)
+}
 
 getSeries(defaultSorting,defaultOrder)
+paginationSeries(total,1)
 filterButton.on('click', function(){
     let selectedSorting = $('#type').val()
     let selectedOrder = $('#order').val()
     getSeries(selectedSorting,selectedOrder)
+    paginationSeries(total,1)
 })
 seeDetails(List)
 
 $('#search-input').on('keyup', function (event) {
     if (event.keyCode === 13) {
-        search()
+        List.html('')
+        search(1)
+        paginationSearch(total,1)
     }
 })
 
 /*
     API FUNCTIONS
  */
-function getSeries(sort, order){
+function getSeries(sort, order, page){
     List.html('')
+
+    let ajax = $.parseJSON($.ajax({
+        url: `https://api.themoviedb.org/3/discover/tv`,
+        dataType: 'json',
+        data:{
+            'api_key': API_KEY,
+            'sort_by': `${sort}.${order}`,
+            'page': page
+        },
+        async:false
+    }).responseText)
 
     $.ajax({
         url: `https://api.themoviedb.org/3/discover/tv`,
@@ -31,7 +194,8 @@ function getSeries(sort, order){
         dataType: 'json',
         data:{
             'api_key': API_KEY,
-            'sort_by': `${sort}.${order}`
+            'sort_by': `${sort}.${order}`,
+            'page': page
         },
         success: function (hasil){
             if (hasil.results.length > 0) {
@@ -56,6 +220,8 @@ function getSeries(sort, order){
             }
         }
     })
+
+    total = ajax.total_pages
 }
 
 function getDetails(Id, mediaType) {
@@ -66,7 +232,7 @@ function getDetails(Id, mediaType) {
         dataType: 'json',
         type: 'GET',
         data: {
-            'api_key': API_KEY,
+            'api_key': API_KEY
         },
         success: function (detail) {
             if (detail.success !== false) {
@@ -125,8 +291,20 @@ function seeDetails(idmedia){
     })
 }
 
-function search() {
+function search(Page) {
     List.html('')
+
+    let ajax = $.parseJSON($.ajax({
+        url: 'https://api.themoviedb.org/3/search/tv',
+        type: 'GET',
+        dataType: 'json',
+        data: {
+            'api_key': API_KEY,
+            'query': $('#search-input').val(),
+            'page': Page
+        },
+        async:false
+    }).responseText)
 
     $.ajax({
         url: 'https://api.themoviedb.org/3/search/tv',
@@ -134,7 +312,8 @@ function search() {
         dataType: 'json',
         data: {
             'api_key': API_KEY,
-            'query': $('#search-input').val()
+            'query': $('#search-input').val(),
+            'pagep': Page
         },
         success: function (hasil) {
             if (hasil.total_results > 0) {
@@ -170,4 +349,6 @@ function search() {
 
         }
     })
+
+    total = ajax.total_pages
 }
