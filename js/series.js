@@ -106,13 +106,25 @@ function paginationSearch(totalPages, Page){
         LAST PAGE
      */
     if(Page === totalPages){
-        beforePages = beforePages - 1
+        if (Page === 1){
+            beforePages -= 0
+        }
+        if (Page > 2){
+            beforePages -= 2
+        }
+
+    } else if(Page === totalPages - 1){
+        if (Page === 2){
+            beforePages -= 1
+        }
     }
 
     /*
         FIRST PAGE
      */
     if(Page === 1){
+        afterPages += 2
+    } else if (Page === 2){
         afterPages += 1
     }
 
