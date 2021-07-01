@@ -221,7 +221,7 @@ function getMovies(sort, order, page){
                     List.append(`
                             <div class="col-md-3 mb-2 d-flex">
                                 <div class="card primary" style="width: auto">
-                                  <img src="${typeof data.poster_path !== 'undefined' ? IMG_URL + data.poster_path : "assets/placeholder.png"}" class="card-img-top" alt="...">
+                                  <img src="${data.poster_path !== null ? IMG_URL + data.poster_path : "assets/placeholder.png"}" class="card-img-top" alt="...">
                                   <div class="card-body d-flex flex-column">
                                     <h6 class="card-title mt-auto fw-bold">${typeof data.original_name !== 'undefined' ? data.original_name : data.original_title}</h6>
                                     <p class="card-text fs-6"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 28 28" width="24px" fill="#F2B705"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27l4.15,2.51c0.76,0.46,1.69-0.22,1.49-1.08l-1.1-4.72l3.67-3.18c0.67-0.58,0.31-1.68-0.57-1.75l-4.83-0.41 l-1.89-4.46c-0.34-0.81-1.5-0.81-1.84,0L9.19,8.63L4.36,9.04c-0.88,0.07-1.24,1.17-0.57,1.75l3.67,3.18l-1.1,4.72 c-0.2,0.86,0.73,1.54,1.49,1.08L12,17.27z"/></g></svg> 
