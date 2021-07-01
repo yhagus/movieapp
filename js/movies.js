@@ -123,9 +123,13 @@ function paginationSearch(totalPages, Page){
         FIRST PAGE
      */
     if(Page === 1){
-        afterPages += 2
+        if (Page === 1){
+            afterPages += 1
+        }
     } else if (Page === 2){
-        afterPages += 1
+        if (Page === 2){
+            afterPages += 0
+        }
     }
 
     /*
