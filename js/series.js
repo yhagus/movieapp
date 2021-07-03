@@ -5,181 +5,40 @@ const filterButton = $('#filter-button')
 const defaultSorting = $('#type').val()
 const defaultOrder = $('#order').val()
 const ulTag = $('#pagination')
+const listGenres = $('#listGenres')
+const Genres = $.parseJSON($.ajax({
+    url: `https://api.themoviedb.org/3/genre/tv/list`,
+    dataType: 'json',
+    data: {
+        'api_key': API_KEY
+    },
+    async: false
+}).responseText)
+
+let pickedGenre = []
 let total
 let page
 let selectedSorting
 let selectedOrder
 let iSearch = true
 
-function paginationSeries(totalPages, Page){
-    selectedSorting = $('#type').val()
-    selectedOrder = $('#order').val()
-    let liTag = ''
-    let activeLi
-    let beforePages = Page - 1
-    let afterPages = Page + 1
-
-    /*
-        SHOW/HIDE PREVIOUS BUTTON
-     */
-    if(Page > 1){
-        liTag += `
-        <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page - 1}); getSeries(selectedSorting,selectedOrder,${Page - 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        `
-    }
-
-    /*
-        LAST PAGE
-     */
-    if(Page === totalPages){
-        beforePages = beforePages - 1
-    }
-
-    /*
-        FIRST PAGE
-     */
-    if(Page === 1){
-        afterPages += 1
-    }
-
-    /*
-        NAVIGATE CURRENT PAGE
-     */
-    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++){
-        if(pageLength > totalPages){
-            continue
-        }
-        if (pageLength === 0){
-            pageLength += 1
-        }
-        if(Page === pageLength){
-            activeLi = 'active'
-        } else {
-            activeLi = ''
-        }
-
-        liTag += `
-        <li class="page-item ${activeLi}" onclick="paginationSeries(${totalPages}, ${pageLength}); getSeries(selectedSorting,selectedOrder,${pageLength})">
-            <a class="page-link" href="javascript:">
-                <span aria-hidden="true">${pageLength}</span>
-            </a>
-        </li>
-        `
-    }
-
-    if(Page < totalPages){
-        liTag += `
-        <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page + 1}); getSeries(selectedSorting,selectedOrder,${Page + 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-        `
-    }
-    ulTag.html(liTag)
-}
-
-function paginationSearch(totalPages, Page){
-    let liTag = ''
-    let activeLi
-    let beforePages = Page - 1
-    let afterPages = Page + 1
-
-    /*
-        SHOW/HIDE PREVIOUS BUTTON
-     */
-    if(Page > 1){
-        liTag += `
-        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page - 1}); search(${Page - 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        `
-    }
-
-    /*
-        LAST PAGE
-     */
-    if(Page === totalPages){
-        if (Page === 1){
-            beforePages -= 0
-        }
-        if (Page > 2){
-            beforePages -= 2
-        }
-
-    } else if(Page === totalPages - 1){
-        if (Page === 2){
-            beforePages -= 1
-        }
-    }
-
-    /*
-        FIRST PAGE
-     */
-    if(Page === 1){
-        if (Page === 1){
-            afterPages += 1
-        }
-    } else if (Page === 2){
-        if (Page === 2){
-            afterPages += 0
-        }
-    }
-
-    /*
-        NAVIGATE CURRENT PAGE
-     */
-    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++){
-        if(pageLength > totalPages){
-            continue
-        }
-        if (pageLength === 0){
-            pageLength += 1
-        }
-        if(Page === pageLength){
-            activeLi = 'active'
-        } else {
-            activeLi = ''
-        }
-
-        liTag += `
-        <li class="page-item ${activeLi}" onclick="paginationSearch(${totalPages}, ${pageLength}); search(${pageLength})">
-            <a class="page-link" href="javascript:">
-                <span aria-hidden="true">${pageLength}</span>
-            </a>
-        </li>
-        `
-    }
-
-    if(Page < totalPages){
-        liTag += `
-        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page + 1}); search(${Page + 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-        `
-    }
-    ulTag.html(liTag)
-}
-
-getSeries(defaultSorting,defaultOrder)
+getSeries(defaultSorting,defaultOrder,1,pickedGenre.join(','))
 paginationSeries(total,1)
+seeDetails(List)
+showGenres()
+
 filterButton.on('click', function(){
     let selectedSorting = $('#type').val()
     let selectedOrder = $('#order').val()
-    getSeries(selectedSorting,selectedOrder)
+    pickedGenre = []
+    $.each($("input[name='genres']:checked"), function () {
+        pickedGenre.push($(this).val())
+    })
+    getSeries(selectedSorting, selectedOrder, 1, pickedGenre.join(','))
     paginationSeries(total,1)
 })
-seeDetails(List)
-
 $('#search-input').on('keyup', function (event) {
+    $("input[name='genres']").prop('checked', false)
     if (event.keyCode === 13) {
         List.html('')
         search(1)
@@ -190,7 +49,7 @@ $('#search-input').on('keyup', function (event) {
 /*
     API FUNCTIONS
  */
-function getSeries(sort, order, page){
+function getSeries(sort, order, page, genre){
     List.html('')
 
     let ajax = $.parseJSON($.ajax({
@@ -199,7 +58,8 @@ function getSeries(sort, order, page){
         data:{
             'api_key': API_KEY,
             'sort_by': `${sort}.${order}`,
-            'page': page
+            'page': page,
+            'with_genres': genre
         },
         async:false
     }).responseText)
@@ -367,4 +227,192 @@ function search(Page) {
     })
 
     total = ajax.total_pages
+}
+
+// AUTO GENERATE ALL GENRE LIST //
+function showGenres(){
+    $.each(Genres.genres, function(i, data){
+        listGenres.append(`
+        <div class="form-check">
+            <input class="form-check-input" name="genres" type="checkbox" value="${data.id}" id="${data.name}">
+            <label class="form-check-label" for="${data.name}">
+                ${data.name}
+            </label>
+        </div>
+        `)
+    })
+}
+
+function paginationSeries(totalPages, Page){
+    selectedSorting = $('#type').val()
+    selectedOrder = $('#order').val()
+    let liTag = ''
+    let activeLi
+    let beforePages = Page - 1
+    let afterPages = Page + 1
+
+    /*
+        SHOW/HIDE PREVIOUS BUTTON
+     */
+    if(Page > 1){
+        liTag += `
+        <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page - 1}); getSeries(selectedSorting,selectedOrder,${Page - 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        `
+    }
+
+    /*
+        LAST PAGE
+     */
+    if(Page === totalPages){
+        if (Page === 1){
+            beforePages -= 0
+        }
+        if (Page > 2){
+            beforePages -= 2
+        }
+
+    } else if(Page === totalPages - 1){
+        if (Page === 2){
+            beforePages -= 1
+        }
+    }
+
+    /*
+        FIRST PAGE
+     */
+    if(Page === 1){
+        if (Page === 1){
+            afterPages += 1
+        }
+    } else if (Page === 2){
+        if (Page === 2){
+            afterPages += 0
+        }
+    }
+
+    /*
+        NAVIGATE CURRENT PAGE
+     */
+    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++){
+        if(pageLength > totalPages){
+            continue
+        }
+        if (pageLength === 0){
+            pageLength += 1
+        }
+        if(Page === pageLength){
+            activeLi = 'active'
+        } else {
+            activeLi = ''
+        }
+
+        liTag += `
+        <li class="page-item ${activeLi}" onclick="paginationSeries(${totalPages}, ${pageLength}); getSeries(selectedSorting,selectedOrder,${pageLength})">
+            <a class="page-link" href="javascript:">
+                <span aria-hidden="true">${pageLength}</span>
+            </a>
+        </li>
+        `
+    }
+
+    if(Page < totalPages){
+        liTag += `
+        <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page + 1}); getSeries(selectedSorting,selectedOrder,${Page + 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        `
+    }
+    ulTag.html(liTag)
+}
+
+function paginationSearch(totalPages, Page){
+    let liTag = ''
+    let activeLi
+    let beforePages = Page - 1
+    let afterPages = Page + 1
+
+    /*
+        SHOW/HIDE PREVIOUS BUTTON
+     */
+    if(Page > 1){
+        liTag += `
+        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page - 1}); search(${Page - 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        `
+    }
+
+    /*
+        LAST PAGE
+     */
+    if(Page === totalPages){
+        if (Page === 1){
+            beforePages -= 0
+        }
+        if (Page > 2){
+            beforePages -= 2
+        }
+
+    } else if(Page === totalPages - 1){
+        if (Page === 2){
+            beforePages -= 1
+        }
+    }
+
+    /*
+        FIRST PAGE
+     */
+    if(Page === 1){
+        if (Page === 1){
+            afterPages += 1
+        }
+    } else if (Page === 2){
+        if (Page === 2){
+            afterPages += 0
+        }
+    }
+
+    /*
+        NAVIGATE CURRENT PAGE
+     */
+    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++){
+        if(pageLength > totalPages){
+            continue
+        }
+        if (pageLength === 0){
+            pageLength += 1
+        }
+        if(Page === pageLength){
+            activeLi = 'active'
+        } else {
+            activeLi = ''
+        }
+
+        liTag += `
+        <li class="page-item ${activeLi}" onclick="paginationSearch(${totalPages}, ${pageLength}); search(${pageLength})">
+            <a class="page-link" href="javascript:">
+                <span aria-hidden="true">${pageLength}</span>
+            </a>
+        </li>
+        `
+    }
+
+    if(Page < totalPages){
+        liTag += `
+        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page + 1}); search(${Page + 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        `
+    }
+    ulTag.html(liTag)
 }

@@ -1,7 +1,6 @@
 /*
     VARIABLE DECLARATIONS
  */
-
 const API_KEY = 'a4ca44c52c5dd4822128c31e02d41910'
 const IMG_URL = 'https://image.tmdb.org/t/p/w500'
 const List = $('#movie-list')
@@ -55,7 +54,6 @@ filterButton.on('click', function () {
         pickedGenre.push($(this).val())
     })
     getMovies(selectedSorting, selectedOrder, 1, pickedGenre.join(','))
-    console.log(pickedGenre.join(','))
     paginationMovies(total, 1)
     $('#search-input').html('')
 })
