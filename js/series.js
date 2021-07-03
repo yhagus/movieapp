@@ -20,7 +20,6 @@ let total
 let page
 let selectedSorting
 let selectedOrder
-let iSearch = true
 
 getSeries(defaultSorting,defaultOrder,1,pickedGenre.join(','))
 paginationSeries(total,1)
@@ -71,7 +70,8 @@ function getSeries(sort, order, page, genre){
         data:{
             'api_key': API_KEY,
             'sort_by': `${sort}.${order}`,
-            'page': page
+            'page': page,
+            'with_genres': genre
         },
         success: function (hasil){
             if (hasil.results.length > 0) {
@@ -256,7 +256,7 @@ function paginationSeries(totalPages, Page){
      */
     if(Page > 1){
         liTag += `
-        <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page - 1}); getSeries(selectedSorting,selectedOrder,${Page - 1})">
+        <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page - 1}); getSeries(selectedSorting,selectedOrder,${Page - 1},pickedGenre)">
             <a class="page-link" href="javascript:" aria-label="Next">
                 <span aria-hidden="true">&laquo;</span>
             </a>
@@ -311,7 +311,7 @@ function paginationSeries(totalPages, Page){
         }
 
         liTag += `
-        <li class="page-item ${activeLi}" onclick="paginationSeries(${totalPages}, ${pageLength}); getSeries(selectedSorting,selectedOrder,${pageLength})">
+        <li class="page-item ${activeLi}" onclick="paginationSeries(${totalPages}, ${pageLength}); getSeries(selectedSorting,selectedOrder,${pageLength},pickedGenre)">
             <a class="page-link" href="javascript:">
                 <span aria-hidden="true">${pageLength}</span>
             </a>
@@ -321,7 +321,7 @@ function paginationSeries(totalPages, Page){
 
     if(Page < totalPages){
         liTag += `
-        <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page + 1}); getSeries(selectedSorting,selectedOrder,${Page + 1})">
+        <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page + 1}); getSeries(selectedSorting,selectedOrder,${Page + 1},pickedGenre)">
             <a class="page-link" href="javascript:" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>

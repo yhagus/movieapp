@@ -23,7 +23,7 @@ let total
 let page
 let selectedSorting
 let selectedOrder
-let iSearch = true
+let searchVal = 
 
 /*
     INITS
@@ -297,7 +297,7 @@ function paginationMovies(totalPages, Page) {
      */
     if (Page > 1) {
         liTag += `
-        <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page - 1}); getMovies(selectedSorting,selectedOrder,${Page - 1})">
+        <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page - 1}); getMovies(selectedSorting,selectedOrder,${Page - 1},pickedGenre)">
             <a class="page-link" href="javascript:" aria-label="Next">
                 <span aria-hidden="true">&laquo;</span>
             </a>
@@ -352,7 +352,7 @@ function paginationMovies(totalPages, Page) {
         }
 
         liTag += `
-        <li class="page-item ${activeLi}" onclick="paginationMovies(${totalPages}, ${pageLength}); getMovies(selectedSorting,selectedOrder,${pageLength})">
+        <li class="page-item ${activeLi}" onclick="paginationMovies(${totalPages}, ${pageLength}); getMovies(selectedSorting,selectedOrder,${pageLength},pickedGenre)">
             <a class="page-link" href="javascript:">
                 <span aria-hidden="true">${pageLength}</span>
             </a>
@@ -362,7 +362,7 @@ function paginationMovies(totalPages, Page) {
 
     if (Page < totalPages) {
         liTag += `
-        <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page + 1}); getMovies(selectedSorting,selectedOrder,${Page + 1})">
+        <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page + 1}); getMovies(selectedSorting,selectedOrder,${Page + 1},pickedGenre)">
             <a class="page-link" href="javascript:" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
