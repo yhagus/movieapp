@@ -31,7 +31,7 @@ let iSearch = true
  */
 
 // SHOW DEFAULT POPULAR MOVIES //
-getMovies(defaultSorting, defaultOrder, 1, pickedGenre)
+getMovies(defaultSorting, defaultOrder, 1, pickedGenre.join(','))
 
 // RUN DEFAULT PAGINATION //
 paginationMovies(total, 1)
@@ -50,6 +50,7 @@ showGenres()
 filterButton.on('click', function () {
     selectedSorting = $('#type').val()
     selectedOrder = $('#order').val()
+    pickedGenre = []
     $.each($("input[name='genres']:checked"), function () {
         pickedGenre.push($(this).val())
     })
