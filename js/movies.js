@@ -1,3 +1,7 @@
+/*
+    VARIABLE DECLARATIONS
+ */
+
 const API_KEY = 'a4ca44c52c5dd4822128c31e02d41910'
 const IMG_URL = 'https://image.tmdb.org/t/p/w500'
 const List = $('#movie-list')
@@ -5,187 +9,63 @@ const filterButton = $('#filter-button')
 const defaultSorting = $('#type').val()
 const defaultOrder = $('#order').val()
 const ulTag = $('#pagination')
+const listGenres = $('#listGenres')
+const Genres = $.parseJSON($.ajax({
+    url: `https://api.themoviedb.org/3/genre/movie/list`,
+    dataType: 'json',
+    data: {
+        'api_key': API_KEY
+    },
+    async: false
+}).responseText)
+
+let pickedGenre = []
 let total
 let page
 let selectedSorting
 let selectedOrder
 let iSearch = true
 
-function paginationMovies(totalPages, Page){
+/*
+    INITS
+ */
+
+// SHOW DEFAULT POPULAR MOVIES //
+getMovies(defaultSorting, defaultOrder, 1, pickedGenre)
+
+// RUN DEFAULT PAGINATION //
+paginationMovies(total, 1)
+
+// GETTING DETAILS FROM EACH MOVIES //
+seeDetails(List)
+
+// SHOW ALL GENRES //
+showGenres()
+
+/*
+    BUTTON CLICKS
+ */
+
+// FILTER BUTTON ON CLICK //
+filterButton.on('click', function () {
     selectedSorting = $('#type').val()
     selectedOrder = $('#order').val()
-    let liTag = ''
-    let activeLi
-    let beforePages = Page - 1
-    let afterPages = Page + 1
-
-    /*
-        SHOW/HIDE PREVIOUS BUTTON
-     */
-    if(Page > 1){
-        liTag += `
-        <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page - 1}); getMovies(selectedSorting,selectedOrder,${Page - 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        `
-    }
-
-    /*
-        LAST PAGE
-     */
-    if(Page === totalPages){
-        beforePages = beforePages - 1
-    }
-
-    /*
-        FIRST PAGE
-     */
-    if(Page === 1){
-        afterPages += 1
-    }
-
-    /*
-        NAVIGATE CURRENT PAGE
-     */
-    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++){
-        if(pageLength > totalPages){
-            continue
-        }
-        if (pageLength === 0){
-            pageLength += 1
-        }
-        if(Page === pageLength){
-            activeLi = 'active'
-        } else {
-            activeLi = ''
-        }
-
-        liTag += `
-        <li class="page-item ${activeLi}" onclick="paginationMovies(${totalPages}, ${pageLength}); getMovies(selectedSorting,selectedOrder,${pageLength})">
-            <a class="page-link" href="javascript:">
-                <span aria-hidden="true">${pageLength}</span>
-            </a>
-        </li>
-        `
-    }
-
-    if(Page < totalPages){
-        liTag += `
-        <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page + 1}); getMovies(selectedSorting,selectedOrder,${Page + 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-        `
-    }
-    ulTag.html(liTag)
-}
-
-function paginationSearch(totalPages, Page){
-    let liTag = ''
-    let activeLi
-    let beforePages = Page - 1
-    let afterPages = Page + 1
-
-    /*
-        SHOW/HIDE PREVIOUS BUTTON
-     */
-    if(Page > 1){
-        liTag += `
-        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page - 1}); search(${Page - 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
-                <span aria-hidden="true">&laquo;</span>
-            </a>
-        </li>
-        `
-    }
-
-    /*
-        LAST PAGE
-     */
-    if(Page === totalPages){
-        if (Page === 1){
-            beforePages -= 0
-        }
-        if (Page > 2){
-            beforePages -= 2
-        }
-
-    } else if(Page === totalPages - 1){
-        if (Page === 2){
-            beforePages -= 1
-        }
-    }
-
-    /*
-        FIRST PAGE
-     */
-    if(Page === 1){
-        if (Page === 1){
-            afterPages += 1
-        }
-    } else if (Page === 2){
-        if (Page === 2){
-            afterPages += 0
-        }
-    }
-
-    /*
-        NAVIGATE CURRENT PAGE
-     */
-    for(let pageLength = beforePages; pageLength <= afterPages; pageLength++){
-        if(pageLength > totalPages){
-            continue
-        }
-        if (pageLength === 0){
-            pageLength += 1
-        }
-        if(Page === pageLength){
-            activeLi = 'active'
-        } else {
-            activeLi = ''
-        }
-
-        liTag += `
-        <li class="page-item ${activeLi}" onclick="paginationSearch(${totalPages}, ${pageLength}); search(${pageLength})">
-            <a class="page-link" href="javascript:">
-                <span aria-hidden="true">${pageLength}</span>
-            </a>
-        </li>
-        `
-    }
-
-    if(Page < totalPages){
-        liTag += `
-        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page + 1}); search(${Page + 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-            </a>
-        </li>
-        `
-    }
-    ulTag.html(liTag)
-}
-
-getMovies(defaultSorting,defaultOrder,1)
-paginationMovies(total,1)
-filterButton.on('click', function(){
-    selectedSorting = $('#type').val()
-    selectedOrder = $('#order').val()
-    getMovies(selectedSorting,selectedOrder,1)
-    paginationMovies(total,1)
+    $.each($("input[name='genres']:checked"), function () {
+        pickedGenre.push($(this).val())
+    })
+    getMovies(selectedSorting, selectedOrder, 1, pickedGenre.join(','))
+    console.log(pickedGenre.join(','))
+    paginationMovies(total, 1)
     $('#search-input').html('')
 })
 
-seeDetails(List)
-
+// SEARCH BUTTON PRESS ENTER //
 $('#search-input').on('keyup', function (event) {
+    $("input[name='genres']").prop('checked', false)
     if (event.keyCode === 13) {
         List.html('')
         search(1)
-        paginationSearch(total,1)
+        paginationSearch(total, 1)
     }
 })
 
@@ -193,30 +73,33 @@ $('#search-input').on('keyup', function (event) {
     API FUNCTIONS
  */
 
-function getMovies(sort, order, page){
+// SHOW MOVIES //
+function getMovies(sort, order, page, genre) {
     List.html('')
 
     let ajax = $.parseJSON($.ajax({
         url: `https://api.themoviedb.org/3/discover/movie`,
         dataType: 'json',
-        data:{
+        data: {
             'api_key': API_KEY,
             'sort_by': `${sort}.${order}`,
-            'page': page
+            'page': page,
+            'with_genres': genre
         },
-        async:false
+        async: false
     }).responseText)
 
     $.ajax({
         url: `https://api.themoviedb.org/3/discover/movie`,
         type: 'GET',
         dataType: 'json',
-        data:{
+        data: {
             'api_key': API_KEY,
             'sort_by': `${sort}.${order}`,
-            'page': page
+            'page': page,
+            'with_genres': genre
         },
-        success: function (hasil){
+        success: function (hasil) {
 
             if (hasil.results.length > 0) {
                 let movie = hasil.results
@@ -245,6 +128,7 @@ function getMovies(sort, order, page){
     total = ajax.total_pages
 }
 
+// GET DETAILS MOVIE FROM API //
 function getDetails(Id, mediaType) {
     let getGenre = document.getElementById('genres')
     let getActor = document.getElementById('actor')
@@ -273,6 +157,12 @@ function getDetails(Id, mediaType) {
                 }
                 $('#status').text(detail.status)
                 $('#director').text(detail.director)
+                $('#time').html(`
+                <h5>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 28 28" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>&emsp;
+                ${typeof detail.runtime !== 'undefined' ? timeConvert(detail.runtime) : '-'}
+                </h5>
+                `)
             }
         }
     })
@@ -286,7 +176,7 @@ function getDetails(Id, mediaType) {
         },
         success: function (detail) {
             if (detail.success !== false) {
-                detail.cast.sort((a,b) => (a.popularity > b.popularity) ? -1 : ((b.popularity > a.popularity) ? 1 : 0))
+                detail.cast.sort((a, b) => (a.popularity > b.popularity) ? -1 : ((b.popularity > a.popularity) ? 1 : 0))
                 getActor.textContent = ''
                 for (let i = 0; i < 5; i++) {
                     getActor.textContent += detail.cast[i].name
@@ -303,14 +193,16 @@ function getDetails(Id, mediaType) {
     })
 }
 
-function seeDetails(idmedia){
-    $(idmedia).on('click', '.see-details', function (){
+// INSIDE SEE DETAILS BUTTON //
+function seeDetails(idmedia) {
+    $(idmedia).on('click', '.see-details', function () {
         let id = $(this).data('id')
         let media = $(this).data('media')
-        getDetails(id,media)
+        getDetails(id, media)
     })
 }
 
+// SEARCH FUNCTION //
 function search(Page) {
     List.html('')
 
@@ -323,7 +215,7 @@ function search(Page) {
             'query': $('#search-input').val(),
             'page': Page
         },
-        async:false
+        async: false
     }).responseText)
 
     $.ajax({
@@ -372,4 +264,212 @@ function search(Page) {
     })
 
     total = ajax.total_pages
+}
+
+// AUTO GENERATE ALL GENRE LIST //
+function showGenres(){
+    $.each(Genres.genres, function(i, data){
+        listGenres.append(`
+        <div class="form-check">
+            <input class="form-check-input" name="genres" type="checkbox" value="${data.id}" id="${data.name}">
+            <label class="form-check-label" for="${data.name}">
+                ${data.name}
+            </label>
+        </div>
+        `)
+    })
+}
+
+/*
+    PAGINATION
+ */
+
+// PAGINATION FOR FILTERS //
+function paginationMovies(totalPages, Page) {
+    selectedSorting = $('#type').val()
+    selectedOrder = $('#order').val()
+    let liTag = ''
+    let activeLi
+    let beforePages = Page - 1
+    let afterPages = Page + 1
+
+    /*
+        SHOW/HIDE PREVIOUS BUTTON
+     */
+    if (Page > 1) {
+        liTag += `
+        <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page - 1}); getMovies(selectedSorting,selectedOrder,${Page - 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        `
+    }
+
+    /*
+        LAST PAGE
+     */
+    if (Page === totalPages) {
+        if (Page === 1) {
+            beforePages -= 0
+        }
+        if (Page > 2) {
+            beforePages -= 2
+        }
+
+    } else if (Page === totalPages - 1) {
+        if (Page === 2) {
+            beforePages -= 1
+        }
+    }
+
+    /*
+        FIRST PAGE
+     */
+    if (Page === 1) {
+        if (Page === 1) {
+            afterPages += 1
+        }
+    } else if (Page === 2) {
+        if (Page === 2) {
+            afterPages += 0
+        }
+    }
+
+    /*
+        NAVIGATE CURRENT PAGE
+     */
+    for (let pageLength = beforePages; pageLength <= afterPages; pageLength++) {
+        if (pageLength > totalPages) {
+            continue
+        }
+        if (pageLength === 0) {
+            pageLength += 1
+        }
+        if (Page === pageLength) {
+            activeLi = 'active'
+        } else {
+            activeLi = ''
+        }
+
+        liTag += `
+        <li class="page-item ${activeLi}" onclick="paginationMovies(${totalPages}, ${pageLength}); getMovies(selectedSorting,selectedOrder,${pageLength})">
+            <a class="page-link" href="javascript:">
+                <span aria-hidden="true">${pageLength}</span>
+            </a>
+        </li>
+        `
+    }
+
+    if (Page < totalPages) {
+        liTag += `
+        <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page + 1}); getMovies(selectedSorting,selectedOrder,${Page + 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        `
+    }
+    ulTag.html(liTag)
+}
+
+// PAGINATION THAT RUNS WHEN WE USE SEARCH //
+function paginationSearch(totalPages, Page) {
+    let liTag = ''
+    let activeLi
+    let beforePages = Page - 1
+    let afterPages = Page + 1
+
+    /*
+        SHOW/HIDE PREVIOUS BUTTON
+     */
+    if (Page > 1) {
+        liTag += `
+        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page - 1}); search(${Page - 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        `
+    }
+
+    /*
+        LAST PAGE
+     */
+    if (Page === totalPages) {
+        if (Page === 1) {
+            beforePages -= 0
+        }
+        if (Page > 2) {
+            beforePages -= 2
+        }
+
+    } else if (Page === totalPages - 1) {
+        if (Page === 2) {
+            beforePages -= 1
+        }
+    }
+
+    /*
+        FIRST PAGE
+     */
+    if (Page === 1) {
+        if (Page === 1) {
+            afterPages += 1
+        }
+    } else if (Page === 2) {
+        if (Page === 2) {
+            afterPages += 0
+        }
+    }
+
+    /*
+        NAVIGATE CURRENT PAGE
+     */
+    for (let pageLength = beforePages; pageLength <= afterPages; pageLength++) {
+        if (pageLength > totalPages) {
+            continue
+        }
+        if (pageLength === 0) {
+            pageLength += 1
+        }
+        if (Page === pageLength) {
+            activeLi = 'active'
+        } else {
+            activeLi = ''
+        }
+
+        liTag += `
+        <li class="page-item ${activeLi}" onclick="paginationSearch(${totalPages}, ${pageLength}); search(${pageLength})">
+            <a class="page-link" href="javascript:">
+                <span aria-hidden="true">${pageLength}</span>
+            </a>
+        </li>
+        `
+    }
+
+    if (Page < totalPages) {
+        liTag += `
+        <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page + 1}); search(${Page + 1})">
+            <a class="page-link" href="javascript:" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        `
+    }
+    ulTag.html(liTag)
+}
+
+/*
+    EXTRAS
+ */
+
+// CONVERT MINUTE TO HOUR AND MINUTES //
+function timeConvert(n) {
+    let num = n;
+    let hours = (num / 60);
+    let rhours = Math.floor(hours);
+    let minutes = (hours - rhours) * 60;
+    let rminutes = Math.round(minutes);
+    return rhours + "h " + rminutes + "m";
 }
