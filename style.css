@@ -104,3 +104,6 @@ div.content{
 ::-webkit-scrollbar-thumb:hover{
     background-color: #251A73;
 }
+.page-link{
+    border-radius:1rem;
+}

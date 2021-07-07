@@ -20,6 +20,7 @@ let total
 let page
 let selectedSorting
 let selectedOrder
+let searchValue
 
 getSeries(defaultSorting,defaultOrder,1,pickedGenre.join(','))
 paginationSeries(total,1)
@@ -37,11 +38,13 @@ filterButton.on('click', function(){
     paginationSeries(total,1)
 })
 $('#search-input').on('keyup', function (event) {
-    $("input[name='genres']").prop('checked', false)
     if (event.keyCode === 13) {
+        $("input[name='genres']").prop('checked', false)
         List.html('')
+        searchValue = $('#search-input').val()
         search(1)
         paginationSearch(total,1)
+        $('#search-input').val('')
     }
 })
 
@@ -176,7 +179,7 @@ function search(Page) {
         dataType: 'json',
         data: {
             'api_key': API_KEY,
-            'query': $('#search-input').val(),
+            'query': searchValue,
             'page': Page
         },
         async:false
@@ -188,8 +191,8 @@ function search(Page) {
         dataType: 'json',
         data: {
             'api_key': API_KEY,
-            'query': $('#search-input').val(),
-            'pagep': Page
+            'query': searchValue,
+            'page': Page
         },
         success: function (hasil) {
             if (hasil.total_results > 0) {
@@ -221,8 +224,6 @@ function search(Page) {
                         </div>`
                 )
             }
-            $('#search-input').val('')
-
         }
     })
 
@@ -233,9 +234,9 @@ function search(Page) {
 function showGenres(){
     $.each(Genres.genres, function(i, data){
         listGenres.append(`
-        <div class="form-check">
-            <input class="form-check-input" name="genres" type="checkbox" value="${data.id}" id="${data.name}">
-            <label class="form-check-label" for="${data.name}">
+        <div class="form-check-inline me-2 mb-3">
+            <input class="btn-check" name="genres" type="checkbox" value="${data.id}" id="${data.name}">
+            <label class="btn btn-sm btn-outline-light rounded-pill" style="border-color: transparent" for="${data.name}">
                 ${data.name}
             </label>
         </div>
@@ -248,6 +249,7 @@ function paginationSeries(totalPages, Page){
     selectedOrder = $('#order').val()
     let liTag = ''
     let activeLi
+    let bgColor
     let beforePages = Page - 1
     let afterPages = Page + 1
 
@@ -257,7 +259,7 @@ function paginationSeries(totalPages, Page){
     if(Page > 1){
         liTag += `
         <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page - 1}); getSeries(selectedSorting,selectedOrder,${Page - 1},pickedGenre)">
-            <a class="page-link" href="javascript:" aria-label="Next">
+            <a class="page-link ms-1 me-1" style="background-color: #150F40;color: #BF8B4B;border-color:transparent;" href="javascript:">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
@@ -304,15 +306,17 @@ function paginationSeries(totalPages, Page){
         if (pageLength === 0){
             pageLength += 1
         }
-        if(Page === pageLength){
+        if (Page === pageLength) {
             activeLi = 'active'
+            bgColor = 'background-color: #BF8B4B;border-color:transparent;'
         } else {
             activeLi = ''
+            bgColor = 'background-color: #150F40;color: #BF8B4B;border-color:transparent;'
         }
 
         liTag += `
         <li class="page-item ${activeLi}" onclick="paginationSeries(${totalPages}, ${pageLength}); getSeries(selectedSorting,selectedOrder,${pageLength},pickedGenre)">
-            <a class="page-link" href="javascript:">
+            <a class="page-link ms-1 me-1" style="${bgColor}" href="javascript:">
                 <span aria-hidden="true">${pageLength}</span>
             </a>
         </li>
@@ -322,7 +326,7 @@ function paginationSeries(totalPages, Page){
     if(Page < totalPages){
         liTag += `
         <li class="page-item" onclick="paginationSeries(${totalPages}, ${Page + 1}); getSeries(selectedSorting,selectedOrder,${Page + 1},pickedGenre)">
-            <a class="page-link" href="javascript:" aria-label="Next">
+            <a class="page-link ms-1 me-1" style="${bgColor}" href="javascript:">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
@@ -334,6 +338,7 @@ function paginationSeries(totalPages, Page){
 function paginationSearch(totalPages, Page){
     let liTag = ''
     let activeLi
+    let bgColor
     let beforePages = Page - 1
     let afterPages = Page + 1
 
@@ -343,7 +348,7 @@ function paginationSearch(totalPages, Page){
     if(Page > 1){
         liTag += `
         <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page - 1}); search(${Page - 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
+            <a class="page-link ms-1 me-1" style="background-color: #150F40;color: #BF8B4B;border-color:transparent;" href="javascript:" aria-label="Next">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
@@ -390,15 +395,17 @@ function paginationSearch(totalPages, Page){
         if (pageLength === 0){
             pageLength += 1
         }
-        if(Page === pageLength){
+        if (Page === pageLength) {
             activeLi = 'active'
+            bgColor = 'background-color: #BF8B4B;border-color:transparent;'
         } else {
             activeLi = ''
+            bgColor = 'background-color: #150F40;color: #BF8B4B;border-color:transparent;'
         }
 
         liTag += `
         <li class="page-item ${activeLi}" onclick="paginationSearch(${totalPages}, ${pageLength}); search(${pageLength})">
-            <a class="page-link" href="javascript:">
+            <a class="page-link ms-1 me-1" style="${bgColor}" href="javascript:">
                 <span aria-hidden="true">${pageLength}</span>
             </a>
         </li>
@@ -408,7 +415,7 @@ function paginationSearch(totalPages, Page){
     if(Page < totalPages){
         liTag += `
         <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page + 1}); search(${Page + 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
+            <a class="page-link ms-1 me-1" style="${bgColor}" href="javascript:" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>

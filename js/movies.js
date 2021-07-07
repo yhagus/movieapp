@@ -23,7 +23,7 @@ let total
 let page
 let selectedSorting
 let selectedOrder
-let searchVal = 
+let searchValue
 
 /*
     INITS
@@ -55,16 +55,18 @@ filterButton.on('click', function () {
     })
     getMovies(selectedSorting, selectedOrder, 1, pickedGenre.join(','))
     paginationMovies(total, 1)
-    $('#search-input').html('')
+    $('#search-input').val('')
 })
 
 // SEARCH BUTTON PRESS ENTER //
 $('#search-input').on('keyup', function (event) {
-    $("input[name='genres']").prop('checked', false)
     if (event.keyCode === 13) {
+        $("input[name='genres']").prop('checked', false)
         List.html('')
+        searchValue = $('#search-input').val()
         search(1)
         paginationSearch(total, 1)
+        $('#search-input').val('')
     }
 })
 
@@ -157,10 +159,10 @@ function getDetails(Id, mediaType) {
                 $('#status').text(detail.status)
                 $('#director').text(detail.director)
                 $('#time').html(`
-                <h5>
+                <h6>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 28 28" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>&emsp;
                 ${typeof detail.runtime !== 'undefined' ? timeConvert(detail.runtime) : '-'}
-                </h5>
+                </h6>
                 `)
             }
         }
@@ -211,7 +213,7 @@ function search(Page) {
         dataType: 'json',
         data: {
             'api_key': API_KEY,
-            'query': $('#search-input').val(),
+            'query': searchValue,
             'page': Page
         },
         async: false
@@ -223,7 +225,7 @@ function search(Page) {
         dataType: 'json',
         data: {
             'api_key': API_KEY,
-            'query': $('#search-input').val(),
+            'query': searchValue,
             'page': Page
         },
         success: function (hasil) {
@@ -247,7 +249,6 @@ function search(Page) {
                         `)
                 })
 
-
             } else {
                 $('#movie-list').html(`
                         <div class="container-fluid d-flex flex-column justify-content-center">
@@ -266,12 +267,12 @@ function search(Page) {
 }
 
 // AUTO GENERATE ALL GENRE LIST //
-function showGenres(){
-    $.each(Genres.genres, function(i, data){
+function showGenres() {
+    $.each(Genres.genres, function (i, data) {
         listGenres.append(`
-        <div class="form-check">
-            <input class="form-check-input" name="genres" type="checkbox" value="${data.id}" id="${data.name}">
-            <label class="form-check-label" for="${data.name}">
+        <div class="form-check-inline me-2 mb-3">
+            <input class="btn-check" name="genres" type="checkbox" value="${data.id}" id="${data.name}">
+            <label class="btn btn-sm btn-outline-light rounded-pill" style="border-color: transparent" for="${data.name}">
                 ${data.name}
             </label>
         </div>
@@ -289,6 +290,7 @@ function paginationMovies(totalPages, Page) {
     selectedOrder = $('#order').val()
     let liTag = ''
     let activeLi
+    let bgColor
     let beforePages = Page - 1
     let afterPages = Page + 1
 
@@ -298,7 +300,7 @@ function paginationMovies(totalPages, Page) {
     if (Page > 1) {
         liTag += `
         <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page - 1}); getMovies(selectedSorting,selectedOrder,${Page - 1},pickedGenre)">
-            <a class="page-link" href="javascript:" aria-label="Next">
+            <a class="page-link ms-1 me-1" style="background-color: #150F40;color: #BF8B4B;border-color:transparent;" href="javascript:">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
@@ -347,13 +349,15 @@ function paginationMovies(totalPages, Page) {
         }
         if (Page === pageLength) {
             activeLi = 'active'
+            bgColor = 'background-color: #BF8B4B;border-color:transparent;'
         } else {
             activeLi = ''
+            bgColor = 'background-color: #150F40;color: #BF8B4B;border-color:transparent;'
         }
 
         liTag += `
         <li class="page-item ${activeLi}" onclick="paginationMovies(${totalPages}, ${pageLength}); getMovies(selectedSorting,selectedOrder,${pageLength},pickedGenre)">
-            <a class="page-link" href="javascript:">
+            <a class="page-link ms-1 me-1" style="${bgColor}" href="javascript:">
                 <span aria-hidden="true">${pageLength}</span>
             </a>
         </li>
@@ -363,7 +367,7 @@ function paginationMovies(totalPages, Page) {
     if (Page < totalPages) {
         liTag += `
         <li class="page-item" onclick="paginationMovies(${totalPages}, ${Page + 1}); getMovies(selectedSorting,selectedOrder,${Page + 1},pickedGenre)">
-            <a class="page-link" href="javascript:" aria-label="Next">
+            <a class="page-link ms-1 me-1" style="${bgColor}" href="javascript:">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
@@ -376,6 +380,7 @@ function paginationMovies(totalPages, Page) {
 function paginationSearch(totalPages, Page) {
     let liTag = ''
     let activeLi
+    let bgColor
     let beforePages = Page - 1
     let afterPages = Page + 1
 
@@ -385,7 +390,7 @@ function paginationSearch(totalPages, Page) {
     if (Page > 1) {
         liTag += `
         <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page - 1}); search(${Page - 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
+            <a class="page-link ms-1 me-1" style="background-color: #150F40;color: #BF8B4B;border-color:transparent;" href="javascript:" aria-label="Next">
                 <span aria-hidden="true">&laquo;</span>
             </a>
         </li>
@@ -434,13 +439,15 @@ function paginationSearch(totalPages, Page) {
         }
         if (Page === pageLength) {
             activeLi = 'active'
+            bgColor = 'background-color: #BF8B4B;border-color:transparent;'
         } else {
             activeLi = ''
+            bgColor = 'background-color: #150F40;color: #BF8B4B;border-color:transparent;'
         }
 
         liTag += `
         <li class="page-item ${activeLi}" onclick="paginationSearch(${totalPages}, ${pageLength}); search(${pageLength})">
-            <a class="page-link" href="javascript:">
+            <a class="page-link ms-1 me-1" style="${bgColor}" href="javascript:">
                 <span aria-hidden="true">${pageLength}</span>
             </a>
         </li>
@@ -450,7 +457,7 @@ function paginationSearch(totalPages, Page) {
     if (Page < totalPages) {
         liTag += `
         <li class="page-item" onclick="paginationSearch(${totalPages}, ${Page + 1}); search(${Page + 1})">
-            <a class="page-link" href="javascript:" aria-label="Next">
+            <a class="page-link ms-1 me-1" style="${bgColor}" href="javascript:" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
             </a>
         </li>
