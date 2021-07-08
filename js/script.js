@@ -26,6 +26,7 @@ $('#search-input').on('keyup', function (event) {
     API FUNCTIONS
  */
 
+// GET TRENDING DATA //
 function getTrending() {
     $("#trending").html('')
 
@@ -61,6 +62,7 @@ function getTrending() {
     })
 }
 
+// GET POPULAR MOVIE DATA //
 function getPopular(mediaType, IdMedia) {
     let idmedia = IdMedia
     $(idmedia).html('')
@@ -80,7 +82,7 @@ function getPopular(mediaType, IdMedia) {
                     $(idmedia).append(`
                             <div class="mt-4 col-md-2 mb-2 d-flex">
                                 <div class="card primary" style="width: auto">
-                                  <img src="${data.poster_path !== null ? IMG_URL + data.poster_path : "http://via.placeholder.com/1080x1580"}" class="card-img-top" alt="...">
+                                  <img src="${data.poster_path !== null ? IMG_URL + data.poster_path : "assets/placeholder.png"}" class="card-img-top" alt="...">
                                   <div class="card-body d-flex flex-column">
                                     <h6 class="card-title mt-auto fw-bold">${typeof data.name !== 'undefined' ? data.name : data.title}</h6>
                                     <p class="card-text fs-6"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 28 28" width="24px" fill="#F2B705"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27l4.15,2.51c0.76,0.46,1.69-0.22,1.49-1.08l-1.1-4.72l3.67-3.18c0.67-0.58,0.31-1.68-0.57-1.75l-4.83-0.41 l-1.89-4.46c-0.34-0.81-1.5-0.81-1.84,0L9.19,8.63L4.36,9.04c-0.88,0.07-1.24,1.17-0.57,1.75l3.67,3.18l-1.1,4.72 c-0.2,0.86,0.73,1.54,1.49,1.08L12,17.27z"/></g></svg> 
@@ -97,6 +99,7 @@ function getPopular(mediaType, IdMedia) {
     })
 }
 
+// GET DETAILS //
 function getDetails(Id, mediaType) {
     let getGenre = document.getElementById('genres')
     let getActor = document.getElementById('actor')
@@ -126,10 +129,10 @@ function getDetails(Id, mediaType) {
                 $('#status').text(detail.status)
                 $('#director').text(detail.director)
                 $('#time').html(`
-                <h5>
+                <h6>
                 <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 28 28" width="24px" fill="#FFFFFF"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>&emsp;
                 ${typeof detail.runtime !== 'undefined' ? timeConvert(detail.runtime) : '-'}
-                </h5>
+                </h6>
                 `)
             }
         }
@@ -162,6 +165,7 @@ function getDetails(Id, mediaType) {
     })
 }
 
+// SEE DETAILS //
 function seeDetails(idmedia) {
     $(idmedia).on('click', '.see-details', function () {
         let id = $(this).data('id')
@@ -189,7 +193,7 @@ function searchAll() {
                     $('#movie-list').append(`
                                 <div class="mt-4 col-md-2 mb-2 d-flex">
                                     <div class="card primary" style="width: 18rem">
-                                      <img src="${data.poster_path !== null ? IMG_URL + data.poster_path : "http://via.placeholder.com/1080x1580"}" class="card-img-top" alt="...">
+                                      <img src="${data.poster_path !== null ? IMG_URL + data.poster_path : "assets/placeholder.png"}" class="card-img-top" alt="...">
                                       <div class="card-body d-flex flex-column">
                                         <h6 class="card-title mt-auto fw-bold">${typeof data.name !== 'undefined' ? data.name : data.title}</h6>
                                         <p class="card-text fs-6"><svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 28 28" width="24px" fill="#F2B705"><g><path d="M0,0h24v24H0V0z" fill="none"/><path d="M0,0h24v24H0V0z" fill="none"/></g><g><path d="M12,17.27l4.15,2.51c0.76,0.46,1.69-0.22,1.49-1.08l-1.1-4.72l3.67-3.18c0.67-0.58,0.31-1.68-0.57-1.75l-4.83-0.41 l-1.89-4.46c-0.34-0.81-1.5-0.81-1.84,0L9.19,8.63L4.36,9.04c-0.88,0.07-1.24,1.17-0.57,1.75l3.67,3.18l-1.1,4.72 c-0.2,0.86,0.73,1.54,1.49,1.08L12,17.27z"/></g></svg>
